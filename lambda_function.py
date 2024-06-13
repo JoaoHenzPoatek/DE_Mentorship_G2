@@ -1,6 +1,7 @@
 import datetime
 import requests
 import psycopg2
+import json
 
 
 def fetch_data_from_imdb_api(country_iso2: str = "US"):
@@ -115,5 +116,16 @@ def check_preferences():
 
     update_if_user_should_watch(preferences, should_watch_today)
 
+def lambda_handler(event, context):
+    output_text = check_preferences()
 
-print(check_preferences())
+    # Format response
+    response = {
+        "statusCode": 200,
+        "body": json.dumps(output_text), 
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+
+    return response
